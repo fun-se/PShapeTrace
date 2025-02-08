@@ -1,6 +1,6 @@
 /******************************
 *
-* tool
+* tool.pde: The main file of PShapeTrace
 *
 ******************************/
 
@@ -1091,10 +1091,18 @@ void resetMatrix() {
 
 float scrollOffset = 0;
 
+
 void drawUI() {
   pushMatrix();
   pushStyle();
+  
+  // Set color for drawing GUI
+  colorMode(RGB, 255, 255, 255);
+  stroke(0, 0, 0);
+  fill(255, 255, 255);
+  rectMode(CORNER);
 
+  // Draw a rect for the timeline pane
   super.rect(-5, height, widthAlt, heightAdd);
 
   if (mouseOverAlt(width/16*15-btnSize, height+heightAdd/16*3, btnSize, heightAdd/4)) {
