@@ -8,3 +8,6 @@ application.windows32
 application.windows64
 application.macosx
 out
+/junit/target/
+/junit/src/test/resources
+/junit/generated-processing/
