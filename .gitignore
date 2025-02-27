@@ -11,3 +11,6 @@ out
 /junit/target/
 /junit/src/test/resources
 /junit/generated-processing/
+.project
+.classpath
+.settings/
