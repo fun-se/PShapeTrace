@@ -90,6 +90,16 @@ Processing IDE でファイルを開いて実行すると、ツールが有効�
 
 ツールを一時的に無効化する場合は、`setup()` 関数の先頭に `TOOL_DISABLED = true;` という代入文を追加してください。
 ツールはこの変数 `TOOL_DISABLED` の値を見て、`size()` や `extraSettings()` などの処理をスキップします。
+プログラム例 `example.pde` に追加した場合は、以下のようになります。
+
+```java
+void setup() {
+  TOOL_DISABLED = true;
+  size(200, 200);
+  extraSettings();
+  // ...
+}
+```
 
 この代入文を取り除くか、コメントアウトすると、ツールが再び有効になります。
 なお、プログラムの実行途中にツールの有効、無効を切り換えることは想定されていません。
