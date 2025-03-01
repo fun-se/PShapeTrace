@@ -8,6 +8,9 @@
 import processing.core.PImage;
 import java.util.ArrayList;
 
+/**
+ * Records an execution of a drawing instruction
+ */
 class ShapeRecord {
   String type;
   Object[] params;
@@ -38,16 +41,38 @@ class ShapeRecord {
   }
 }
 
+/**
+ * Represents instructions executed to draw the current frame
+ */
 ArrayList<ShapeRecord> shapes = new ArrayList<ShapeRecord>();
+
+/**
+ * Records clicked shapes to select a shape from overlapping ones
+ */
 ArrayList<Integer> clickedIndices = new ArrayList<Integer>();
+
+/**
+  * Represents the background color and parameters
+  */
 int bgColor;
 Object[] bgParams;
+
+
+boolean TOOL_DISABLED = false;
 
 void resetShapes() {
   shapes.clear();
 }
 
+//--- Methods to override the original behavior of Processing functions ---
+
 void background(int v1) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.background(v1);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   super.background(v1);
@@ -61,6 +86,12 @@ void background(int v1) {
 }
 
 void background(int v1, int alpha) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.background(v1, alpha);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   super.background(v1, alpha);
@@ -74,6 +105,12 @@ void background(int v1, int alpha) {
 }
 
 void background(int v1, int v2, int v3) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.background(v1, v2, v3);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   super.background(v1, v2, v3);
@@ -87,6 +124,12 @@ void background(int v1, int v2, int v3) {
 }
 
 void background(int v1, int v2, int v3, int alpha) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.background(v1, v2, v3, alpha);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   super.background(v1, v2, v3, alpha);
@@ -100,6 +143,12 @@ void background(int v1, int v2, int v3, int alpha) {
 }
 
 void background(PImage img) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.background(img);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   super.background(img);
@@ -113,6 +162,12 @@ void background(PImage img) {
 }
 
 void text(char c, float x, float y) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.text(c, x, y);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -128,6 +183,12 @@ void text(char c, float x, float y) {
 }
 
 void text(String str, float x, float y) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.text(str, x, y);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -143,14 +204,22 @@ void text(String str, float x, float y) {
 }
 
 void text(char[] chars, int start, int stop, float x, float y) {
+  // TODO The tool should override this method
   super.text(chars, start, stop, x, y);
 }
 
 void text(String str, float x1, float y1, float x2, float y2) {
+  // TODO The tool should override this method
   super.text(str, x1, y1, x2, y2); 
 }
 
 void text(int num, float x, float y) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.text(num, x, y);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -166,6 +235,12 @@ void text(int num, float x, float y) {
 }
 
 void text(float num, float x, float y) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.text(num, x, y);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -181,6 +256,12 @@ void text(float num, float x, float y) {
 }
 
 void image(PImage img, float x, float y, float w, float h) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.image(img, x, y, w, h);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -196,6 +277,12 @@ void image(PImage img, float x, float y, float w, float h) {
 }
 
 void image(PImage img, float x, float y) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.image(img, x, y);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -211,6 +298,12 @@ void image(PImage img, float x, float y) {
 }
 
 void arc(float x, float y, float w, float h, float start, float stop) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.arc(x, y, w, h, start, stop);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -226,6 +319,12 @@ void arc(float x, float y, float w, float h, float start, float stop) {
 }
 
 void arc(float x, float y, float w, float h, float start, float stop, int mode) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.arc(x, y, w, h, start, stop, mode);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -241,6 +340,12 @@ void arc(float x, float y, float w, float h, float start, float stop, int mode) 
 }
 
 void circle(float x, float y, float d) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.circle(x, y, d);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -256,6 +361,12 @@ void circle(float x, float y, float d) {
 }
 
 void ellipse(float x, float y, float w, float h) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.ellipse(x, y, w, h);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -271,6 +382,12 @@ void ellipse(float x, float y, float w, float h) {
 }
 
 void line(float x1, float y1, float x2, float y2) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.line(x1, y1, x2, y2);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -286,6 +403,12 @@ void line(float x1, float y1, float x2, float y2) {
 }
 
 void point(float x, float y) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.point(x, y);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -301,6 +424,12 @@ void point(float x, float y) {
 }
 
 void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -316,6 +445,12 @@ void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, 
 }
 
 void rect(float x, float y, float w, float h) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.rect(x, y, w, h);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
 
@@ -331,6 +466,12 @@ void rect(float x, float y, float w, float h) {
 }
 
 void rect(float x, float y, float w, float h, float r) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.rect(x, y, w, h, r);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -346,6 +487,12 @@ void rect(float x, float y, float w, float h, float r) {
 }
 
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.rect(x, y, w, h, tl, tr, br, bl);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -361,6 +508,12 @@ void rect(float x, float y, float w, float h, float tl, float tr, float br, floa
 }
 
 void square(float x, float y, float s) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.square(x, y, s);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -376,6 +529,12 @@ void square(float x, float y, float s) {
 }
 
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.triangle(x1, y1, x2, y2, x3, y3);
+    return;
+  }
+
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
   
@@ -389,6 +548,122 @@ void triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
   ));
   super.triangle(x1, y1, x2, y2, x3, y3);
 }
+
+
+@Override
+public void size(int x, int y) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.size(x, y);
+    return;
+  }
+    
+  // Adjust the window size to include the tool's UI
+  widthAlt  = x + widthAdd;
+  heightAlt = y + heightAdd;
+  super.size(widthAlt, heightAlt);
+}
+
+@Override
+void translate(float tx, float ty) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.translate(tx, ty);
+    return;
+  }
+
+  super.translate(tx, ty);
+  currentTransformation.translateX += tx;
+  currentTransformation.translateY += ty;
+  transformationsChanged = true;
+}
+void scale(float sx, float sy) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.scale(sx, sy);
+    return;
+  }
+
+  if (sx == 0 || sy == 0) {
+    return ;
+  }
+  super.scale(sx, sy);
+  currentTransformation.scaleX *= sx;
+  currentTransformation.scaleY *= sy;
+  transformationsChanged = true;
+}
+void rotate(float angle) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.rotate(angle);
+    return;
+  }
+
+  super.rotate(angle);
+  currentTransformation.rotateAngle += angle;
+  transformationsChanged = true;
+}
+
+void resetMatrix() {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.resetMatrix();
+    return;
+  }
+
+  super.resetMatrix();
+  currentTransformation.reset();
+}
+
+
+int rectMode = -1;
+int ellipseMode = -1;
+int imageMode = -1;
+
+@Override 
+void rectMode(int mode) {
+  rectMode = mode;
+  super.rectMode(mode);
+}
+
+void ellipseMode(int mode) {
+  ellipseMode = mode;
+  super.ellipseMode(mode);
+}
+
+void imageMode(int mode) {
+  imageMode = mode;
+  super.imageMode(mode);
+}
+
+
+
+void draw() {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    drawMain();
+    return;
+  }
+
+  updateMouseState();
+  updateKeyState();
+  
+  if (drawingMode) {
+    pushMatrix();
+    pushStyle();
+    drawMain();
+    popMatrix();
+    popStyle();
+    drawEnd();
+  } else {
+    extraMode();
+  }
+  
+  searchShapes();
+  drawUI();
+}
+
+//--- Methods to implement the tool's behavior ---
 
 boolean isPointInText(float px, float py, float tx, float ty, float tw, float th) {
   return px >= tx && px <= tx + tw && py >= ty - th && py <= ty;
@@ -846,6 +1121,10 @@ void changeFrame() {
   }
 }
 
+/**
+ * This method is called when a program execution is 
+ * suspended by the tool.
+ */
 void extraMode() {
   if(customKeyPressed) changeFrame();
   displayFrame(currentFrameIndex);
@@ -861,24 +1140,6 @@ void displayFrame(int frameIndex) {
 boolean drawingMode = true;
 int recodeFrameCount = 1;
 
-void draw() {
-  updateMouseState();
-  updateKeyState();
-  
-  if (drawingMode) {
-    pushMatrix();
-    pushStyle();
-    drawMain();
-    popMatrix();
-    popStyle();
-    drawEnd();
-  } else {
-    extraMode();
-  }
-  
-  searchShapes();
-  drawUI();
-}
 
 void changeDrawingMode() {
   if (drawingMode) {
@@ -899,26 +1160,6 @@ void drawEnd() {
   lastTransformation = null;
   previousSavedTransformation = null;
   transformationsChanged = false;
-}
-
-int rectMode = -1;
-int ellipseMode = -1;
-int imageMode = -1;
-
-@Override 
-void rectMode(int mode) {
-  rectMode = mode;
-  super.rectMode(mode);
-}
-
-void ellipseMode(int mode) {
-  ellipseMode = mode;
-  super.ellipseMode(mode);
-}
-
-void imageMode(int mode) {
-  imageMode = mode;
-  super.imageMode(mode);
 }
 
 boolean customMousePressed = false;
@@ -988,9 +1229,14 @@ int mouseXAlt = 0, mouseYAlt = 0;
 int pmouseXAlt = 0, pmouseYAlt = 0;
 float btnSize = 0;
 
+/**
+ * This method enables the tool.
+ */
 void extraSettings() {
-
-
+  if (TOOL_DISABLED) {
+    return;
+  }
+  
   width = widthAlt - widthAdd;
   height = heightAlt - heightAdd;
   
@@ -1004,12 +1250,6 @@ void extraSettings() {
   if (btnSize > 30) btnSize = 30;
 }
 
-@Override
-public void size(int x, int y) {
-  widthAlt  = x + widthAdd;
-  heightAlt = y + heightAdd;
-  super.size(widthAlt, heightAlt);
-}
 
 Transformation currentTransformation = new Transformation();
 Transformation lastTransformation = null;
@@ -1060,33 +1300,6 @@ class Transformation {
     this.scaleY = 1;
     this.rotateAngle = 0;
   }
-}
-
-@Override
-void translate(float tx, float ty) {
-  super.translate(tx, ty);
-  currentTransformation.translateX += tx;
-  currentTransformation.translateY += ty;
-  transformationsChanged = true;
-}
-void scale(float sx, float sy) {
-  if (sx == 0 || sy == 0) {
-    return ;
-  }
-  super.scale(sx, sy);
-  currentTransformation.scaleX *= sx;
-  currentTransformation.scaleY *= sy;
-  transformationsChanged = true;
-}
-void rotate(float angle) {
-  super.rotate(angle);
-  currentTransformation.rotateAngle += angle;
-  transformationsChanged = true;
-}
-
-void resetMatrix() {
-  super.resetMatrix();
-  currentTransformation.reset();
 }
 
 float scrollOffset = 0;
