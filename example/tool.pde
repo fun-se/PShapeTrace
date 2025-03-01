@@ -65,7 +65,10 @@ void resetShapes() {
 }
 
 //--- Methods to override the original behavior of Processing functions ---
+// Not implemented: text methods with z cooridnate, rotateX, rotateY, rotateZ, 
+// shearX, shearY, applyMatrix, setMatrix, camera-related methods, model methods
 
+@Override
 void background(int v1) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -85,26 +88,28 @@ void background(int v1) {
   bgParams = new Object[]{v1};
 }
 
-void background(int v1, int alpha) {
+@Override
+void background(int rgb, float alpha) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
-    super.background(v1, alpha);
+    super.background(rgb, alpha);
     return;
   }
 
   Thread t = Thread.currentThread();
   StackTraceElement caller = t.getStackTrace()[2];
-  super.background(v1, alpha);
+  super.background(rgb, alpha);
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{v1, alpha},
+  shapes.add(new ShapeRecord("background", new Object[]{rgb, alpha},
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = v1;
-  bgParams = new Object[]{v1, alpha};
+  bgColor = rgb;
+  bgParams = new Object[]{rgb, alpha};
 }
 
-void background(int v1, int v2, int v3) {
+@Override
+void background(float v1, float v2, float v3) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
     super.background(v1, v2, v3);
@@ -123,7 +128,8 @@ void background(int v1, int v2, int v3) {
   bgParams = new Object[]{v1, v2, v3};
 }
 
-void background(int v1, int v2, int v3, int alpha) {
+@Override
+void background(float v1, float v2, float v3, float alpha) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
     super.background(v1, v2, v3, alpha);
@@ -142,6 +148,47 @@ void background(int v1, int v2, int v3, int alpha) {
   bgParams = new Object[]{v1, v2, v3, alpha};
 }
 
+@Override
+void background(float gray) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.background(gray);
+    return;
+  }
+
+  Thread t = Thread.currentThread();
+  StackTraceElement caller = t.getStackTrace()[2];
+  super.background(gray);
+  resetShapes();
+  shapes.add(new ShapeRecord("background", new Object[]{gray},
+      caller.getMethodName(), caller.getLineNumber(),
+      null
+  ));
+  bgColor = color(gray);
+  bgParams = new Object[]{gray};
+}
+
+@Override
+void background(float gray, float alpha) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.background(gray, alpha);
+    return;
+  }
+
+  Thread t = Thread.currentThread();
+  StackTraceElement caller = t.getStackTrace()[2];
+  super.background(gray, alpha);
+  resetShapes();
+  shapes.add(new ShapeRecord("background", new Object[]{gray, alpha},
+      caller.getMethodName(), caller.getLineNumber(),
+      null
+  ));
+  bgColor = color(gray, alpha);
+  bgParams = new Object[]{gray, alpha};
+}
+
+@Override
 void background(PImage img) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -161,6 +208,7 @@ void background(PImage img) {
   bgParams = new Object[]{img};
 }
 
+@Override
 void text(char c, float x, float y) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -182,6 +230,7 @@ void text(char c, float x, float y) {
   super.text(c, x, y);
 }
 
+@Override
 void text(String str, float x, float y) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -203,16 +252,19 @@ void text(String str, float x, float y) {
   super.text(str, x, y);
 }
 
+@Override
 void text(char[] chars, int start, int stop, float x, float y) {
   // TODO The tool should override this method
   super.text(chars, start, stop, x, y);
 }
 
+@Override
 void text(String str, float x1, float y1, float x2, float y2) {
   // TODO The tool should override this method
   super.text(str, x1, y1, x2, y2); 
 }
 
+@Override
 void text(int num, float x, float y) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -234,6 +286,7 @@ void text(int num, float x, float y) {
   super.text(num, x, y);
 }
 
+@Override
 void text(float num, float x, float y) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -255,6 +308,7 @@ void text(float num, float x, float y) {
   super.text(num, x, y);
 }
 
+@Override
 void image(PImage img, float x, float y, float w, float h) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -276,6 +330,7 @@ void image(PImage img, float x, float y, float w, float h) {
   super.image(img, x, y, w, h);
 }
 
+@Override
 void image(PImage img, float x, float y) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -297,6 +352,7 @@ void image(PImage img, float x, float y) {
   super.image(img, x, y);
 }
 
+@Override
 void arc(float x, float y, float w, float h, float start, float stop) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -318,6 +374,7 @@ void arc(float x, float y, float w, float h, float start, float stop) {
   super.arc(x, y, w, h, start, stop);
 }
 
+@Override
 void arc(float x, float y, float w, float h, float start, float stop, int mode) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -339,6 +396,7 @@ void arc(float x, float y, float w, float h, float start, float stop, int mode) 
   super.arc(x, y, w, h, start, stop, mode);
 }
 
+@Override
 void circle(float x, float y, float d) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -360,6 +418,7 @@ void circle(float x, float y, float d) {
   super.circle(x, y, d);
 }
 
+@Override
 void ellipse(float x, float y, float w, float h) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -381,6 +440,7 @@ void ellipse(float x, float y, float w, float h) {
   super.ellipse(x, y, w, h);
 }
 
+@Override
 void line(float x1, float y1, float x2, float y2) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -402,6 +462,7 @@ void line(float x1, float y1, float x2, float y2) {
   super.line(x1, y1, x2, y2);
 }
 
+@Override
 void point(float x, float y) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -423,6 +484,7 @@ void point(float x, float y) {
   super.point(x, y);
 }
 
+@Override
 void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -444,6 +506,7 @@ void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, 
   super.quad(x1, y1, x2, y2, x3, y3, x4, y4);
 }
 
+@Override
 void rect(float x, float y, float w, float h) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -486,6 +549,7 @@ void rect(float x, float y, float w, float h, float r) {
   super.rect(x, y, w, h, r);
 }
 
+@Override
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -507,6 +571,7 @@ void rect(float x, float y, float w, float h, float tl, float tr, float br, floa
   super.rect(x, y, w, h, tl, tr, br, bl);
 }
 
+@Override
 void square(float x, float y, float s) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -528,6 +593,7 @@ void square(float x, float y, float s) {
   super.square(x, y, s);
 }
 
+@Override
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -577,6 +643,22 @@ void translate(float tx, float ty) {
   currentTransformation.translateY += ty;
   transformationsChanged = true;
 }
+
+@Override
+void scale(float s) {
+  // Call an original instruction if the tool is disabled 
+  if (TOOL_DISABLED) {
+    super.scale(s);
+    return;
+  }
+
+  super.scale(s);
+  currentTransformation.scaleX *= s;
+  currentTransformation.scaleY *= s;
+  transformationsChanged = true;
+}
+
+@Override
 void scale(float sx, float sy) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -592,6 +674,8 @@ void scale(float sx, float sy) {
   currentTransformation.scaleY *= sy;
   transformationsChanged = true;
 }
+
+@Override
 void rotate(float angle) {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -604,6 +688,7 @@ void rotate(float angle) {
   transformationsChanged = true;
 }
 
+@Override
 void resetMatrix() {
   // Call an original instruction if the tool is disabled 
   if (TOOL_DISABLED) {
@@ -626,11 +711,13 @@ void rectMode(int mode) {
   super.rectMode(mode);
 }
 
+@Override
 void ellipseMode(int mode) {
   ellipseMode = mode;
   super.ellipseMode(mode);
 }
 
+@Override
 void imageMode(int mode) {
   imageMode = mode;
   super.imageMode(mode);
