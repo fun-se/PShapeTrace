@@ -60,6 +60,26 @@ void resetShapes() {
   shapes.clear();
 }
 
+final int NO_MODE = 0;
+
+void recordShape(Object[] params, int mode) {
+  Thread t = Thread.currentThread();
+  StackTraceElement[] stack = t.getStackTrace();
+  StackTraceElement caller = stack[3];
+  StackTraceElement called = stack[2];
+
+  Transformation copyOfCurrentTransformation = null;
+  if (!currentTransformation.isIdentity()) {
+    copyOfCurrentTransformation = new Transformation(currentTransformation);
+  }
+
+  shapes.add(new ShapeRecord(called.getMethodName(), params, mode,
+      caller.getMethodName(), caller.getLineNumber(),
+      copyOfCurrentTransformation
+  ));
+}
+
+
 
 //--- Methods to override the original behavior of Processing functions ---
 // Not implemented: text methods with z cooridnate, rotateX, rotateY, rotateZ, 
@@ -67,535 +87,201 @@ void resetShapes() {
 
 @Override
 void background(int v1) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.background(v1);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
   super.background(v1);
+  if (TOOL_DISABLED) return;
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{v1},
-      caller.getMethodName(), caller.getLineNumber(),
-      null
-  ));
+  recordShape(new Object[]{v1}, NO_MODE);
 }
 
 @Override
 void background(int rgb, float alpha) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.background(rgb, alpha);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
   super.background(rgb, alpha);
+  if (TOOL_DISABLED) return;
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{rgb, alpha},
-      caller.getMethodName(), caller.getLineNumber(),
-      null
-  ));
+  recordShape(new Object[]{rgb, alpha}, NO_MODE);
 }
 
 @Override
 void background(float v1, float v2, float v3) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.background(v1, v2, v3);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
   super.background(v1, v2, v3);
+  if (TOOL_DISABLED) return;
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{v1, v2, v3},
-      caller.getMethodName(), caller.getLineNumber(),
-      null
-  ));
+  recordShape(new Object[]{v1, v2, v3}, NO_MODE);
 }
 
 @Override
 void background(float v1, float v2, float v3, float alpha) {
-  // Call an original instruction if the tool is disabled 
+  super.background(v1, v2, v3, alpha);
   if (TOOL_DISABLED) {
-    super.background(v1, v2, v3, alpha);
     return;
   }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  super.background(v1, v2, v3, alpha);
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{v1, v2, v3, alpha},
-      caller.getMethodName(), caller.getLineNumber(),
-      null
-  ));
+  recordShape(new Object[]{v1, v2, v3, alpha}, NO_MODE);
 }
 
 @Override
 void background(float gray) {
-  // Call an original instruction if the tool is disabled 
+  super.background(gray);
   if (TOOL_DISABLED) {
-    super.background(gray);
     return;
   }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  super.background(gray);
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{gray},
-      caller.getMethodName(), caller.getLineNumber(),
-      null
-  ));
+  recordShape(new Object[]{gray}, NO_MODE);
 }
 
 @Override
 void background(float gray, float alpha) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.background(gray, alpha);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
   super.background(gray, alpha);
+  if (TOOL_DISABLED) return;
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{gray, alpha},
-      caller.getMethodName(), caller.getLineNumber(),
-      null
-  ));
+  recordShape(new Object[]{gray, alpha}, NO_MODE);
 }
 
 @Override
 void background(PImage img) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.background(img);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
   super.background(img);
+  if (TOOL_DISABLED) return;
   resetShapes();
-  shapes.add(new ShapeRecord("background", new Object[]{img},
-      caller.getMethodName(), caller.getLineNumber(),
-      null
-  ));
+  recordShape(new Object[]{img}, NO_MODE);
 }
 
 @Override
 void text(char c, float x, float y) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.text(c, x, y);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("text", new Object[]{c, x, y},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.text(c, x, y);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{c, x, y}, NO_MODE);
 }
 
 @Override
 void text(String str, float x, float y) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.text(str, x, y);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("text", new Object[]{str, x, y},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.text(str, x, y);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{str, x, y}, NO_MODE);
 }
 
 @Override
 void text(char[] chars, int start, int stop, float x, float y) {
-  // TODO The tool should override this method
   super.text(chars, start, stop, x, y);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{chars, start, stop, x, y}, NO_MODE);
 }
 
 @Override
 void text(String str, float x1, float y1, float x2, float y2) {
-  // TODO The tool should override this method
   super.text(str, x1, y1, x2, y2); 
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{str, x1, y1, x2, y2}, NO_MODE);
 }
 
 @Override
 void text(int num, float x, float y) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.text(num, x, y);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("text", new Object[]{num, x, y},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.text(num, x, y);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{num, x, y}, NO_MODE);
 }
 
 @Override
 void text(float num, float x, float y) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.text(num, x, y);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("text", new Object[]{num, x, y},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.text(num, x, y);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{num, x, y}, NO_MODE);
 }
 
 @Override
 void image(PImage img, float x, float y, float w, float h) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.image(img, x, y, w, h);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("image", new Object[]{img, x, y, w, h},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.image(img, x, y, w, h);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{img, x, y, w, h}, imageMode);
 }
 
 @Override
 void image(PImage img, float x, float y) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.image(img, x, y);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("image", new Object[]{img, x, y, img.width, img.height}, imageMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.image(img, x, y);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{img, x, y, img.width, img.height}, imageMode);
 }
 
 @Override
 void arc(float x, float y, float w, float h, float start, float stop) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.arc(x, y, w, h, start, stop);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("arc", new Object[]{x, y, w, h, start, stop}, ellipseMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.arc(x, y, w, h, start, stop);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, w, h, start, stop}, ellipseMode);
 }
 
 @Override
 void arc(float x, float y, float w, float h, float start, float stop, int mode) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.arc(x, y, w, h, start, stop, mode);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("arc", new Object[]{x, y, w, h, start, stop, mode}, ellipseMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.arc(x, y, w, h, start, stop, mode);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, w, h, start, stop, mode}, ellipseMode);
 }
 
 @Override
 void circle(float x, float y, float d) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.circle(x, y, d);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("circle", new Object[]{x, y, d}, ellipseMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.circle(x, y, d);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, d}, ellipseMode);
 }
 
 @Override
 void ellipse(float x, float y, float w, float h) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.ellipse(x, y, w, h);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("ellipse", new Object[]{x, y, w, h}, ellipseMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.ellipse(x, y, w, h);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, w, h}, ellipseMode);
 }
 
 @Override
 void line(float x1, float y1, float x2, float y2) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.line(x1, y1, x2, y2);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("line", new Object[]{x1, y1, x2, y2},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.line(x1, y1, x2, y2);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x1, y1, x2, y2}, NO_MODE);
 }
 
 @Override
 void point(float x, float y) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.point(x, y);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("point", new Object[]{x, y},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.point(x, y);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y}, NO_MODE);
 }
 
 @Override
 void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.quad(x1, y1, x2, y2, x3, y3, x4, y4);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("quad", new Object[]{x1, y1, x2, y2, x3, y3, x4, y4},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x1, y1, x2, y2, x3, y3, x4, y4}, NO_MODE);
 }
 
 @Override
 void rect(float x, float y, float w, float h) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.rect(x, y, w, h);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("rect", new Object[]{x, y, w, h}, rectMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.rect(x, y, w, h);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, w, h}, rectMode);
 }
 
 void rect(float x, float y, float w, float h, float r) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.rect(x, y, w, h, r);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("rect", new Object[]{x, y, w, h, r}, rectMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.rect(x, y, w, h, r);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, w, h, r}, rectMode);
 }
 
 @Override
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.rect(x, y, w, h, tl, tr, br, bl);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("rect", new Object[]{x, y, w, h, tl, tr, br, bl}, rectMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.rect(x, y, w, h, tl, tr, br, bl);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, w, h, tl, tr, br, bl}, rectMode);
 }
 
 @Override
 void square(float x, float y, float s) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.square(x, y, s);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("square", new Object[]{x, y, s}, rectMode,
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.square(x, y, s);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x, y, s}, rectMode);
 }
 
 @Override
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.triangle(x1, y1, x2, y2, x3, y3);
-    return;
-  }
-
-  Thread t = Thread.currentThread();
-  StackTraceElement caller = t.getStackTrace()[2];
-  
-  Transformation shapeTransformation = null;
-  if (!currentTransformation.isIdentity()) {
-    shapeTransformation = new Transformation(currentTransformation);
-  }
-  shapes.add(new ShapeRecord("triangle", new Object[]{x1, y1, x2, y2, x3, y3},
-      caller.getMethodName(), caller.getLineNumber(),
-      shapeTransformation
-  ));
   super.triangle(x1, y1, x2, y2, x3, y3);
+  if (TOOL_DISABLED) return;
+  recordShape(new Object[]{x1, y1, x2, y2, x3, y3}, NO_MODE);
 }
 
 
@@ -615,13 +301,9 @@ public void size(int x, int y) {
 
 @Override
 void translate(float tx, float ty) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.translate(tx, ty);
-    return;
-  }
-
   super.translate(tx, ty);
+  if (TOOL_DISABLED) return;
+
   currentTransformation.translateX += tx;
   currentTransformation.translateY += ty;
   transformationsChanged = true;
@@ -629,13 +311,9 @@ void translate(float tx, float ty) {
 
 @Override
 void scale(float s) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.scale(s);
-    return;
-  }
-
   super.scale(s);
+  if (TOOL_DISABLED) return;
+
   currentTransformation.scaleX *= s;
   currentTransformation.scaleY *= s;
   transformationsChanged = true;
@@ -650,7 +328,7 @@ void scale(float sx, float sy) {
   }
 
   if (sx == 0 || sy == 0) {
-    return ;
+    return;
   }
   super.scale(sx, sy);
   currentTransformation.scaleX *= sx;
@@ -660,26 +338,18 @@ void scale(float sx, float sy) {
 
 @Override
 void rotate(float angle) {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.rotate(angle);
-    return;
-  }
-
   super.rotate(angle);
+  if (TOOL_DISABLED) return;
+
   currentTransformation.rotateAngle += angle;
   transformationsChanged = true;
 }
 
 @Override
 void resetMatrix() {
-  // Call an original instruction if the tool is disabled 
-  if (TOOL_DISABLED) {
-    super.resetMatrix();
-    return;
-  }
-
   super.resetMatrix();
+  if (TOOL_DISABLED) return;
+  
   currentTransformation.reset();
 }
 
