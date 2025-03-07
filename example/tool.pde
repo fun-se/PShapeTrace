@@ -257,6 +257,7 @@ void rect(float x, float y, float w, float h) {
   recordShape(new Object[]{x, y, w, h}, rectMode);
 }
 
+@Override
 void rect(float x, float y, float w, float h, float r) {
   super.rect(x, y, w, h, r);
   if (TOOL_DISABLED) return;
