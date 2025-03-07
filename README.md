@@ -139,13 +139,36 @@ void drawMain() {
 ```
 
 
+## 対応しているメソッドの一覧
+
+実装の労力の都合により、一部のメソッドの記録にのみ対応しています。
+
+ - `background`
+ - `text` 
+ - `image`
+ - `arc`
+ - `circle`
+ - `ellipse`
+ - `line`
+ - `point`
+ - `quad`
+ - `rect`
+ - `square`
+ - `triangle`
+ - `translate`
+ - `scale`
+ - `rotate`
+
+z座標を持つ `text` や `line` メソッドには対応していません。
+また、`rotateX`, `rotateY`, `rotateZ`, `shareX`, `shareY`, `applyMatrix`, `setMatrix`, カメラ (camera) 関連のメソッドに対応していません。
+
+
 ## 使用上の注意
 
 分析対象とするプログラムに書かれた命令は、PShapeTrace の機能と競合してしまうと、うまく動作しません。
 そのため、プログラムの書き方にはいくつかの制限があります。
 
 - ウィンドウのサイズを定義する関数`size`を必ず使用してください。`fullScreen`および 3D には非対応です。
-  - より具体的には、Z座標を持つ `text` メソッド、`rotateX`, `rotateY`, `rotateZ`, `shareX`, `shareY`, `applyMatrix`, `setMatrix`, カメラ (camera) 関連のメソッドに対応していません。
 - ウィンドウのサイズがプログラムの実行中に変化することは想定していないため、サイズが変化するようなプログラムでは正しく動作しません。
 - `setup`内に記述を追加したい場合は、`extraSettings`の呼び出しより後に記述してください。
   また、`size`より前に記述を追加しないでください。
