@@ -39,6 +39,7 @@ class ShapeRecord {
     this.lineNumber = lineNumber;
     this.transformation = transformation;
   }
+  
 }
 
 /**
@@ -51,11 +52,6 @@ ArrayList<ShapeRecord> shapes = new ArrayList<ShapeRecord>();
  */
 ArrayList<Integer> clickedIndices = new ArrayList<Integer>();
 
-/**
-  * Represents the background color and parameters
-  */
-int bgColor;
-Object[] bgParams;
 
 
 boolean TOOL_DISABLED = false;
@@ -63,6 +59,7 @@ boolean TOOL_DISABLED = false;
 void resetShapes() {
   shapes.clear();
 }
+
 
 //--- Methods to override the original behavior of Processing functions ---
 // Not implemented: text methods with z cooridnate, rotateX, rotateY, rotateZ, 
@@ -84,8 +81,6 @@ void background(int v1) {
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = v1;
-  bgParams = new Object[]{v1};
 }
 
 @Override
@@ -104,8 +99,6 @@ void background(int rgb, float alpha) {
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = rgb;
-  bgParams = new Object[]{rgb, alpha};
 }
 
 @Override
@@ -124,8 +117,6 @@ void background(float v1, float v2, float v3) {
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = color(v1, v2, v3);
-  bgParams = new Object[]{v1, v2, v3};
 }
 
 @Override
@@ -144,8 +135,6 @@ void background(float v1, float v2, float v3, float alpha) {
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = color(v1, v2, v3, alpha);
-  bgParams = new Object[]{v1, v2, v3, alpha};
 }
 
 @Override
@@ -164,8 +153,6 @@ void background(float gray) {
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = color(gray);
-  bgParams = new Object[]{gray};
 }
 
 @Override
@@ -184,8 +171,6 @@ void background(float gray, float alpha) {
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = color(gray, alpha);
-  bgParams = new Object[]{gray, alpha};
 }
 
 @Override
@@ -204,8 +189,6 @@ void background(PImage img) {
       caller.getMethodName(), caller.getLineNumber(),
       null
   ));
-  bgColor = -1;
-  bgParams = new Object[]{img};
 }
 
 @Override
