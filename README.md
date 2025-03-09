@@ -32,7 +32,7 @@ while the tool’s user interface is displayed on the right and bottom sections 
 ![demo2](fig/demo2.png)  
 
 
-### Drawing Function Call List  
+### List of Drawing Function Calls  
 
 On the right side of the interface, a list of drawing function calls that rendered the current screen is displayed.  
 Each row corresponds to one function call, arranged in execution order from top to bottom.
