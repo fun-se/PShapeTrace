@@ -1,96 +1,105 @@
 # PShapeTrace
 
-PShapeTrace は Processing のプログラムが実行する描画命令を記録し、
-実行された命令と、画面に表示されている図形の対応関係を可視化するライブラリです。
+Language: [日本語](README.ja.md) | English
 
-PDE（Processing Development Environment）で導入することで、
-実行したプログラム内の図形がどのような関数・引数によって描画されたのかを表示することができます。
-また、実行を一時停止させたり、過去のフレームに巻き戻して表示させたりすることも可能です。
+PShapeTrace is a library for Processing that records drawing function calls executed in a program and visualizes the correspondence between executed functions and rendered shapes.
+The tool also allows users to pause execution and replay previous frames for analysis.  
 
 
-## 使用方法
+## Usage  
 
-PShapeTrace は、分析対象のプログラムに直接組み込んで使うプログラムファイルとして作られているツールです。
-本ツールの機能は以下の3つです。
+PShapeTrace is a source file that is directly embedded into a target program for analysis.  
+The tool provides the following three main features:  
 
-- 呼び出した描画命令の一覧表示
-- 実行画面の図形に対応する描画命令の特定
-- 描画の一時停止
+- Listing executed drawing function calls  
+- Highlighting a function call corresponding to a on-screen shape
+- Pause button to suspend the program's drawing process
+- Replaying previous frames using recorded images 
 
-以下の使用方法の説明では、[exampleディレクトリ](example)にあるプログラムを使っています。
-このディレクトリに格納されたすべての pde ファイルをダウンロードし、
-Processing IDE でファイルを開いて実行すると、ツールが有効な状態で起動します。
+The instructions below use the sample program in the [`example` directory](example).  
+To try it out, download all `.pde` files in this directory, open them in Processing IDE, and run the program.  
+The tool is activated in the program.  
 
-このプログラム `example.pde` ファイルの内容は次のようになっています。
- - `setup` の中では、ウィンドウのサイズを設定する `size()` の呼び出しを行ったあと、PShapeTrace の設定を行う `extraSettings` を呼び出しています。プログラム用の設定を、その下に記述しています。
- - `drawMain` は、通常のプログラムで `draw` に記述する内容を記述しています。
+The `example.pde` program contains the following methods:  
+- The `setup()` method calls `size()` to set the window size, and then initializes the tool by calling `extraSettings()`. Additional settings for the program follow this call.  
+- The `drawMain()` method implements the contents of `draw()` function in regular Processing programs.  
 
-![demo1](fig/demo1.png)
+![demo1](fig/demo1.png)  
 
-プログラムを実行すると、Processing プログラムとしての動作を行う部分が左上に表示され、
-右側と下側に、本ツールが提供するユーザインタフェースが表示されます。
+When the program runs, the Processing program output appears in the upper left,  
+while the tool’s user interface is displayed on the right and bottom sections of the window.  
 
-![demo2](fig/demo2.png)
-
-
-### 呼び出した描画命令の一覧表示
-
-実行画面の右側に、画面内にある図形を描画するために使われた命令の一覧が表示されます。
-
-1行が1つの命令に対応しており、実行順序のとおり、上から並んでいます。
-各行の形式は次の通りです。
-
-> [描画関数を呼び出した関数名]:[描画関数名]\([実際の引数の値])
-
-引数に変数や計算式を使用していた場合でも、その中身の数値が表示されます。
-以下に示す図では、`drawMain` 関数が `background(220);` を最初に呼び出し、
-次に `rect(10, 10, 180, 180);` を呼び出し、
-さらに `circle`、`square` を呼び出していったことが示されています。
-
-![demo3](fig/demo3.png)
-
-### 実行画面の図形に対応する描画命令の特定
-
-実行画面の図形をクリックすると、描画情報一覧の内、該当する図形を赤字でハイライトすることができます。
-これにより、特定の図形が、どの命令によって描画されたのかを確認できます。
-
-![demo4](fig/demo4.gif)
-
-### 描画の一時停止
-
-実行画面下部の右側に表示されている正方形が、描画処理の一時停止・一時停止の解除を行うボタンです。
-クリックすると描画処理が一時停止し、もう1回クリックすると一時停止状態が解除されます。
-
-![demo5](fig/demo5.gif)
-
-実行画面下部の長方形が、描画のタイムラインを表します。
-一時停止中に長方形内部をクリックするか、カーソルキーの左右を押すと、
-過去のフレームの状態を画面に表示させることが可能です。
-呼び出した描画命令の一覧も、そのフレームを描画した命令一覧に切り替わります。
-
-![demo7](fig/demo6.gif)
-
-一時停止中も、図形をクリックすると、その図形を描画した命令がハイライト表示されます。
+![demo2](fig/demo2.png)  
 
 
-### 既存のプログラムに導入する方法
+### Drawing Function Call List  
 
-既存の Processing プログラムに本ツールを導入する場合は、以下の操作を行ってください。
+On the right side of the interface, a list of drawing function calls that rendered the current screen is displayed.  
+Each row corresponds to one function call, arranged in execution order from top to bottom.
 
-1. [toolファイル](example/tool.pde)をダウンロードします。
-2. ツールを導入したいプログラムのディレクトリ内に tool ファイルを設置します。
-3. 設置した状態で Processing の開発環境（PDE）を開き、tool のタブが増えていることを確認します。確認できなかった場合は、プログラムを閉じ、開き直してください。
-4. プログラムを2箇所書き換えます。
-   1. `setup` 関数内で、`size` 関数を呼び出した直後に `extraSettings();`という記述を追加します。
-   2. `draw` 関数の名前を `drawMain` に変更します。
-5. プログラムを実行します。上記の設定が正しく行われていれば、ツールの GUI がウィンドウに表示されます。
+The format of each entry is as follows:  
+
+> [Function that called the drawing command]:[Drawing command](Actual parameter values)
+
+Even if variables or expressions were used as parameters, their evaluated numerical values are displayed.
+For example, the following figure shows that the `drawMain()` function executed:  
+
+1. `background(220);`  
+2. `rect(10, 10, 180, 180);`  
+3. `circle(...)`, `square(...)`, and so on.  
+
+![demo3](fig/demo3.png)  
 
 
-### ツールを一時的に無効化する方法
+### Highlighting Function Calls for On-Screen Shapes  
 
-ツールを一時的に無効化する場合は、`setup()` 関数の先頭に `TOOL_DISABLED = true;` という代入文を追加してください。
-ツールはこの変数 `TOOL_DISABLED` の値を見て、`size()` や `extraSettings()` などの処理をスキップします。
-プログラム例 `example.pde` に追加した場合は、以下のようになります。
+Clicking a shape in the execution screen highlights its corresponding drawing function call in red within the list.  
+This makes it easy to identify which command was used to render a specific shape.  
+
+![demo4](fig/demo4.gif)  
+
+
+### Pausing Execution  
+
+- The square button at the bottom right of the interface pauses and resumes the drawing process.  
+- Clicking it pauses execution, and clicking it again resumes execution.  
+
+![demo5](fig/demo5.gif)  
+
+
+### Replaying past frames
+
+- The rectangular bar at the bottom represents the timeline.  
+- While paused, clicking inside this bar or using the left/right arrow keys allows users to replay previous frames.  
+- The drawing command list also updates to reflect the selected frame.  
+
+![demo7](fig/demo6.gif)  
+
+Even while paused, clicking a shape highlights the drawing function call used to render it.  
+
+
+## Integrating the Tool into an Existing Program  
+
+To integrate PShapeTrace into an existing Processing program, follow these steps:  
+
+1. Download the [`tool.pde` file](example/tool.pde).  
+2. Place the file in the same directory as your Processing program.  
+3. Open the program in PDE and ensure a new tab for `tool` appears.  
+   - If it does not appear, try closing and reopening the program.  
+4. Modify your code in two places:
+   1. In `setup()`, immediately after calling `size()`, add the following line:  
+      ```java
+      extraSettings();
+      ```  
+   2. Rename the `draw()` function to `drawMain()`.  
+5. Run the program. If setup is correct, the tool’s UI will appear in the window.  
+
+
+### How to Temporarily Disable the Tool
+
+To temporarily disable the tool, add the assignment statement `TOOL_DISABLED = true;` at the beginning of the `setup()` function.  
+The tool checks the value of the `TOOL_DISABLED` variable and skips processes such as `size()` and `extraSettings()` accordingly.  
+If added to the example program `example.pde`, it would look like this:
 
 ```java
 void setup() {
@@ -101,113 +110,116 @@ void setup() {
 }
 ```
 
-この代入文を取り除くか、コメントアウトすると、ツールが再び有効になります。
-なお、プログラムの実行途中にツールの有効、無効を切り換えることは想定されていません。
+To re-enable the tool, simply remove or comment out this assignment statement.  
+Note that switching the tool on and off during program execution is not supported.
 
 
-### ツールの使用を終了する方法
+### How to Stop Using the Tool
 
-ツールの使用を終了する場合は、上記の操作を取り消すための以下の操作を行います。
+To completely stop using the tool, follow the steps below to undo the setup:
 
- - `setup` 関数の中の `extraSettings();` という行を取り除く。
- - `setup` 関数の中に `TOOL_DISABLED = true;` という代入文を書いている場合は、それも取り除く。
- - `drawMain` 関数の名前を `draw` 関数に変更する。
- - `tool.pde` ファイルを削除する。
+- Remove the line `extraSettings();` from the `setup` function.
+- If `TOOL_DISABLED = true;` is written in `setup`, remove that as well.
+- Rename the function `drawMain` back to `draw`.
+- Delete the `tool.pde` file.
 
 
-### ツールを有効にした状態の最小限のプログラム
+### Minimal Program with the Tool Enabled
 
-本ツールが使える状態の最小限のプログラムは以下の通りです。
+A minimal program that enables the tool must follow these conditions:
 
- - `setup` 関数を定義し、ウィンドウのサイズ設定を行った後に `extraSettings();` を呼び出す記述を行う。
- - `drawMain` 関数を定義し、ウィンドウに描きたいプログラムを書く。
- - [toolファイル](example/tool.pde) を、プログラムと同一のディレクトリに配置する。
+- Define the `setup` function, set the window size, and call `extraSettings();` afterward.
+- Define the `drawMain` function and write the drawing logic for the window.
+- Place the [tool file](example/tool.pde) in the same directory as the program.
 
-以下に記述例を示します。
+Example:
 
 ```java
 void setup() {
   size(400, 300);
   extraSettings();
-  
 }
 
 void drawMain() {
   background(0);
-    
 }
 ```
 
 
-## 対応しているメソッドの一覧
+## Supported Drawing Functions
 
-実装の労力の都合により、一部のメソッドの記録にのみ対応しています。
+Due to implementation constraints, only a subset of drawing functions are supported for recording:
 
- - `background`
- - `text` 
- - `image`
- - `arc`
- - `circle`
- - `ellipse`
- - `line`
- - `point`
- - `quad`
- - `rect`
- - `square`
- - `triangle`
- - `translate`
- - `scale`
- - `rotate`
+- `background`
+- `text`
+- `image`
+- `arc`
+- `circle`
+- `ellipse`
+- `line`
+- `point`
+- `quad`
+- `rect`
+- `square`
+- `triangle`
+- `translate`
+- `scale`
+- `rotate`
 
-z座標を持つ `text` や `line` メソッドには対応していません。
-また、`rotateX`, `rotateY`, `rotateZ`, `shareX`, `shareY`, `applyMatrix`, `setMatrix`, カメラ (camera) 関連のメソッドに対応していません。
+Funnctions like `text` and `line` with Z-coordinates are not supported.  
+Additionally, the following methods are **not** supported: `rotateX`, `rotateY`, `rotateZ`, `shearX`, `shearY`, `applyMatrix`, `setMatrix`, and camera-related methods.
 
 
-## 使用上の注意
+## Limitations of the Tool
 
-分析対象とするプログラムに書かれた命令は、PShapeTrace の機能と競合してしまうと、うまく動作しません。
-そのため、プログラムの書き方にはいくつかの制限があります。
+When using PShapeTrace, some program instructions may conflict with its functionality, causing unexpected behavior.  
+Therefore, the tool has several limitations as follows:
 
-- ウィンドウのサイズを定義する関数`size`を必ず使用してください。`fullScreen`および 3D には非対応です。
-- ウィンドウのサイズがプログラムの実行中に変化することは想定していないため、サイズが変化するようなプログラムでは正しく動作しません。
-- `setup`内に記述を追加したい場合は、`extraSettings`の呼び出しより後に記述してください。
-  また、`size`より前に記述を追加しないでください。
-- フレーム内の図形描画情報のリセットを`background`により検知しているので、`drawMain`(`draw`)内で`background`を使用するようにしてください。
-- `tool.pde` ファイルの中には、`draw` 以外にも複数の関数が定義されています。それらが分析対象のプログラムの関数定義と衝突し、コンパイルエラーを起こす可能性があります。このときは、プログラム側の関数の名前を変えてください。
-- 画面の状態を巻き戻す機能は、内部的に各フレームでの状態を画像で保存しています。そのため、大画面のプログラムを分析する場合は、保存するフレームの数を自動で減らしますが、それでもメモリ不足になる可能性があります。大学の授業向けに使われるノートパソコンであれば、400×300 程度の大きさでの利用を推奨します。
-- Processing は複数のファイルを1つのプログラムとしてまとめて構文チェックなどを行います。そのため、分析対象プログラムに文法誤りがある場合でも、`tool.pde` ファイルに誤りがあるように表示されることがあります。通常は、分析対象プログラム側にエラーがあると考えて調査を行ってください。
-
+- Always use the `size` function to define the window size.
+  The tool does not support `fullScreen` or 3D mode.
+- The tool does not support dynamic window resizing during execution.
+  Programs that change window size while running may not function correctly.
+- If you need to add extra code in `setup`, place it after calling `extraSettings`.  
+  Also, do not add any code before calling `size`.
+- Use `background` inside `drawMain` (`draw`) to reset drawing information per frame.
+- The `tool.pde` file defines multiple functions in addition to `draw`.
+  If these function names conflict with your program’s function definitions, you may encounter compilation errors.  
+  In such cases, rename the conflicting functions in your program.
+- The replay feature stores frame states as images.
+  For large-screen programs, the number of stored frames is automatically reduced, but memory shortages may still occur.  
+  If using a laptop with 8 GB of memory, a resolution of around 400×300 pixels is recommended.
+- Processing checks syntax across all files in the program.  
+  As a result, even if a syntax error exists in the target program, it may appear as if there is an error in `tool.pde`.  
+  In most cases, investigate the error in the target program first.
 
 
 ## Publication
 
-本ツールについては、下記論文で発表されています。
+The following paper is related to this tool:
 
 ```
 @article{yamasaki_2024,
-	title = {Processingプログラミング初学者のための 図形描画命令の実行と描画結果の対応関係の可視化},
+	title = {Visualization of the Relationship Between Execution and Drawing Results of Shape Drawing Commands for Beginners in Processing Programming},
 	volume = {2024},
 	url = {https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=239264&item_no=1},
-	abstract = {情報学広場 情報処理学会電子図書館},
+	abstract = {Information Processing Society of Japan Digital Library},
 	language = {ja},
 	urldate = {2024-09-18},
-	journal = {ソフトウェアエンジニアリングシンポジウム2024論文集},
-	author = {山崎, 雄太 and 石尾, 隆},
-	month = sep,
+	journal = {Proceedings of Software Engineering Symposium 2024},
+	author = {Yamasaki, Yuta and Ishio, Takashi},
+  month = sep,
 	year = {2024},
 	pages = {232--239},
-    note = {本論文は「一般論文」カテゴリで発表されました。The paper is unreviewed by the program committee of the event.}
+  note = {This paper discusses the design of the tool before conducting a usability study. The paper is presented in the "Technical Report" track of Software Engineering Symposium in Japan; it has not been reviewed by the program committee of the event.}
 }
 ```
 
-
 ## License
 
-本プロジェクトは MIT ライセンスのもとで公開されています。
-詳しい条件は [LICENSE](https://github.com/yourusername/PShapeTrace/blob/main/LICENSE) をご覧ください。
+This project is released under the MIT License.  
+See the [LICENSE](https://github.com/yourusername/PShapeTrace/blob/main/LICENSE) file for details.
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/yourusername/PShapeTrace/blob/main/LICENSE) file for details.
 
 ## Acknowledgements
 
-本プロジェクトは科研費 No.JP20H05706 の補助を受けて実施された研究の成果物です。
+This project was supported by JSPS Grant-in-Aid for Scientific Research No. JP20H05706.
