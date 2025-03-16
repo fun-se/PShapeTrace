@@ -185,19 +185,17 @@ z座標を持つ `text` や `line` メソッドには対応していません。
 本ツールに関連する論文は以下の通りです。
 
 ```
-@article{yamasaki_2024,
+@InProceedings{yamasaki_2024,
 	title = {Processingプログラミング初学者のための 図形描画命令の実行と描画結果の対応関係の可視化},
-	volume = {2024},
-	url = {https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=239264&item_no=1},
-	abstract = {情報学広場 情報処理学会電子図書館},
-	language = {ja},
-	urldate = {2024-09-18},
-	journal = {ソフトウェアエンジニアリングシンポジウム2024論文集},
 	author = {山崎, 雄太 and 石尾, 隆},
-	month = sep,
-	year = {2024},
+	booktitle = {ソフトウェアエンジニアリングシンポジウム2024論文集},
 	pages = {232--239},
-    note = {本論文は被験者実験などを実施する前にツールのデザインについて議論したものです。日本国内のソフトウェアエンジニアリングシンポジウム 2024 の「一般論文」カテゴリで発表されました。査読のない発表論文です。}
+	year = {2024},
+	month = sep,
+	url = {https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=239264&item_no=1},
+	urldate = {2024-09-18},
+	language = {ja},
+  note = {本論文は被験者実験などを実施する前にツールのデザインについて議論したものです。日本国内のソフトウェアエンジニアリングシンポジウム 2024 の「一般論文」カテゴリで発表されました。査読のない発表論文です。}
 }
 ```
 

@@ -198,19 +198,17 @@ Therefore, the tool has several limitations as follows:
 The following paper is related to this tool:
 
 ```
-@article{yamasaki_2024,
-	title = {Visualization of the Relationship Between Execution and Drawing Results of Shape Drawing Commands for Beginners in Processing Programming},
-	volume = {2024},
-	url = {https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=239264&item_no=1},
-	abstract = {Information Processing Society of Japan Digital Library},
-	language = {ja},
-	urldate = {2024-09-18},
-	journal = {Proceedings of Software Engineering Symposium 2024},
-	author = {Yamasaki, Yuta and Ishio, Takashi},
+@inproceedings{yamasaki_2024,
+  title = {Visualization of the Relationship Between Execution and Drawing Results of Shape Drawing Commands for Beginners in Processing Programming},
+  author = {Yamasaki, Yuta and Ishio, Takashi},
+  booktitle = {Proceedings of Software Engineering Symposium 2024},
+  pages = {232--239},
+  year = {2024},
   month = sep,
-	year = {2024},
-	pages = {232--239},
-  note = {This paper discusses the design of the tool before conducting a usability study. The paper is presented in the "Technical Report" track of Software Engineering Symposium in Japan; it has not been reviewed by the program committee of the event.}
+  url = {https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=239264&item_no=1},
+	urldate = {2024-09-18},
+  language = {ja},
+  note = {This ppaer is written in Japanese. This paper discusses the design of the tool before conducting a usability study. The paper is presented in the "Technical Report" track of Software Engineering Symposium in Japan; it has not been reviewed by the program committee of the event.}
 }
 ```
 
