@@ -50,6 +50,15 @@ For example, the following figure shows that the `drawMain()` function executed:
 
 ![demo3](fig/demo3.png)  
 
+#### Affine transformation functions
+
+Processing provides `scale`, `rotate`, and `transform` functions that apply affine transformations to the coordinate system, thereby affecting subsequent function calls.  
+The impact of these functions is indicated by indenting the affected function calls.  
+
+![demo7](fig/demo7.png)  
+
+This figure shows that the `scale` function call on the second line influenced the following seven function calls.
+
 
 ### Highlighting Function Calls for On-Screen Shapes  
 
@@ -73,7 +82,7 @@ This makes it easy to identify which command was used to render a specific shape
 - While paused, clicking inside this bar or using the left/right arrow keys allows users to replay previous frames.  
 - The drawing command list also updates to reflect the selected frame.  
 
-![demo7](fig/demo6.gif)  
+![demo6](fig/demo6.gif)  
 
 Even while paused, clicking a shape highlights the drawing function call used to render it.  
 
