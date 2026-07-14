@@ -52,6 +52,13 @@ ArrayList<ShapeRecord> shapes = new ArrayList<ShapeRecord>();
  */
 ArrayList<Integer> clickedIndices = new ArrayList<Integer>();
 
+/**
+ * Index of the shape whose method name was clicked in the record list.
+ * The corresponding method name is highlighted in red and the shape is
+ * surrounded by a 1-pixel red outline. -1 means no shape is selected.
+ */
+int highlightedShapeIndex = -1;
+
 
 
 boolean TOOL_DISABLED = false;
@@ -401,6 +408,7 @@ void draw() {
   }
   
   searchShapes();
+  drawHighlightOutline();
   drawUI();
 }
 
@@ -842,10 +850,251 @@ PVector applyInverseTransformation(Transformation trans, float x, float y) {
   return new PVector(x3, y3);
 }
 
+/**
+ * Draws a 1-pixel red outline around the shape selected by clicking
+ * its method name in the record list.
+ */
+void drawHighlightOutline() {
+  if (highlightedShapeIndex < 0 || totalFrames == 0) return;
+
+  SavedFrame frame = savedShapes[currentFrameIndex];
+  if (frame == null || highlightedShapeIndex >= frame.shapes.size()) {
+    highlightedShapeIndex = -1;
+    return;
+  }
+
+  ShapeRecord shape = frame.shapes.get(highlightedShapeIndex);
+  if (shape.type.equals("background")) return;
+
+  pushMatrix();
+  pushStyle();
+
+  colorMode(RGB, 255, 255, 255);
+  noFill();
+  stroke(255, 0, 0);
+  // Use super.* so the tool's transformation/mode bookkeeping is untouched.
+  super.rectMode(CORNER);
+  super.ellipseMode(CENTER);
+
+  // Reproduce the same forward transformation assumed by
+  // applyInverseTransformation (rotate, then scale, then translate).
+  float sc = 1;
+  if (shape.transformation != null) {
+    Transformation t = shape.transformation;
+    super.rotate(t.rotateAngle);
+    super.scale(t.scaleX, t.scaleY);
+    super.translate(t.translateX, t.translateY);
+    sc = max(abs(t.scaleX), abs(t.scaleY));
+    if (sc == 0) sc = 1;
+  }
+
+  // Keep the stroke and the outward margin at roughly 1 pixel on screen
+  // even when a scale transformation is active.
+  strokeWeight(1.0 / sc);
+  float m = 1.0 / sc;
+
+  drawShapeOutline(shape, m);
+
+  popStyle();
+  popMatrix();
+}
+
+float num(Object o) {
+  return ((Number) o).floatValue();
+}
+
+/**
+ * Draws the outline of a single shape expanded outward by margin m,
+ * mirroring the coordinate/mode handling used in searchShapes().
+ */
+void drawShapeOutline(ShapeRecord shape, float m) {
+  switch (shape.type) {
+    case "rect": {
+      float rx = num(shape.params[0]);
+      float ry = num(shape.params[1]);
+      float rw = num(shape.params[2]);
+      float rh = num(shape.params[3]);
+      switch (shape.mode) {
+        case CORNER:
+        default:
+          break;
+        case CORNERS:
+          float x1 = min(rx, rw), y1 = min(ry, rh);
+          float x2 = max(rx, rw), y2 = max(ry, rh);
+          rx = x1; ry = y1; rw = x2 - x1; rh = y2 - y1;
+          break;
+        case CENTER:
+          rx -= rw / 2; ry -= rh / 2;
+          break;
+        case RADIUS:
+          rx -= rw; ry -= rh; rw *= 2; rh *= 2;
+          break;
+      }
+      super.rect(rx - m, ry - m, rw + 2 * m, rh + 2 * m);
+      break;
+    }
+    case "square": {
+      float sx = num(shape.params[0]);
+      float sy = num(shape.params[1]);
+      float sw = num(shape.params[2]);
+      float sh = sw;
+      switch (shape.mode) {
+        case CORNER:
+        default:
+          break;
+        case CORNERS:
+          float x1 = min(sx, sw), y1 = min(sy, sh);
+          float x2 = max(sx, sw), y2 = max(sy, sh);
+          sx = x1; sy = y1; sw = x2 - x1; sh = y2 - y1;
+          break;
+        case CENTER:
+          sx -= sw / 2; sy -= sw / 2;
+          break;
+        case RADIUS:
+          sx -= sw; sy -= sw; sw *= 2; sh *= 2;
+          break;
+      }
+      super.rect(sx - m, sy - m, sw + 2 * m, sh + 2 * m);
+      break;
+    }
+    case "image": {
+      float ix = num(shape.params[1]);
+      float iy = num(shape.params[2]);
+      float iw = num(shape.params[3]);
+      float ih = num(shape.params[4]);
+      switch (shape.mode) {
+        case CORNER:
+        default:
+          break;
+        case CORNERS:
+          float x1 = min(ix, iw), y1 = min(iy, ih);
+          float x2 = max(ix, iw), y2 = max(iy, ih);
+          ix = x1; iy = y1; iw = x2 - x1; ih = y2 - y1;
+          break;
+        case CENTER:
+          ix -= iw / 2; iy -= ih / 2;
+          break;
+      }
+      super.rect(ix - m, iy - m, iw + 2 * m, ih + 2 * m);
+      break;
+    }
+    case "circle": {
+      float cx = num(shape.params[0]);
+      float cy = num(shape.params[1]);
+      float cw = num(shape.params[2]);
+      float ch = cw;
+      switch (shape.mode) {
+        case CENTER:
+        default:
+          break;
+        case RADIUS:
+          cw *= 2; ch *= 2;
+          break;
+        case CORNER:
+          cx += cw / 2; cy += cw / 2;
+          break;
+        case CORNERS:
+          float minX = min(cx, cw), minY = min(cy, ch);
+          float maxX = max(cx, cw), maxY = max(cy, ch);
+          cw = maxX - minX; ch = maxY - minY;
+          cx = minX + cw / 2; cy = minY + ch / 2;
+          break;
+      }
+      super.ellipse(cx, cy, cw + 2 * m, ch + 2 * m);
+      break;
+    }
+    case "ellipse": {
+      float ex = num(shape.params[0]);
+      float ey = num(shape.params[1]);
+      float ew = num(shape.params[2]);
+      float eh = num(shape.params[3]);
+      switch (shape.mode) {
+        case CENTER:
+        default:
+          break;
+        case RADIUS:
+          ew *= 2; eh *= 2;
+          break;
+        case CORNER:
+          ex += ew / 2; ey += eh / 2;
+          break;
+        case CORNERS:
+          float minX = min(ex, ew), minY = min(ey, eh);
+          float maxX = max(ex, ew), maxY = max(ey, eh);
+          ew = maxX - minX; eh = maxY - minY;
+          ex = minX + ew / 2; ey = minY + eh / 2;
+          break;
+      }
+      super.ellipse(ex, ey, ew + 2 * m, eh + 2 * m);
+      break;
+    }
+    case "arc": {
+      float ax = num(shape.params[0]);
+      float ay = num(shape.params[1]);
+      float aw = num(shape.params[2]);
+      float ah = num(shape.params[3]);
+      float start = num(shape.params[4]);
+      float stop = num(shape.params[5]);
+      int mode = (shape.params.length == 7) ? (int) shape.params[6] : PIE;
+      switch (shape.mode) {
+        case CENTER:
+        default:
+          break;
+        case RADIUS:
+          aw *= 2; ah *= 2;
+          break;
+        case CORNER:
+          ax += aw / 2; ay += ah / 2;
+          break;
+        case CORNERS:
+          float minX = min(ax, aw), minY = min(ay, ah);
+          float maxX = max(ax, aw), maxY = max(ay, ah);
+          aw = maxX - minX; ah = maxY - minY;
+          ax = minX + aw / 2; ay = minY + ah / 2;
+          break;
+      }
+      super.arc(ax, ay, aw + 2 * m, ah + 2 * m, start, stop, mode);
+      break;
+    }
+    case "line":
+      super.line(num(shape.params[0]), num(shape.params[1]),
+                 num(shape.params[2]), num(shape.params[3]));
+      break;
+    case "point":
+      super.ellipse(num(shape.params[0]), num(shape.params[1]),
+                    10 + 2 * m, 10 + 2 * m);
+      break;
+    case "triangle":
+      super.triangle(num(shape.params[0]), num(shape.params[1]),
+                     num(shape.params[2]), num(shape.params[3]),
+                     num(shape.params[4]), num(shape.params[5]));
+      break;
+    case "quad":
+      super.quad(num(shape.params[0]), num(shape.params[1]),
+                 num(shape.params[2]), num(shape.params[3]),
+                 num(shape.params[4]), num(shape.params[5]),
+                 num(shape.params[6]), num(shape.params[7]));
+      break;
+    case "text": {
+      float tx = num(shape.params[1]);
+      float ty = num(shape.params[2]);
+      float tw = textWidth(shape.params[0].toString());
+      float th = textAscent() + textDescent();
+      super.rect(tx - m, ty - th - m, tw + 2 * m, th + 2 * m);
+      break;
+    }
+    default:
+      break;
+  }
+}
+
 int currentFrameIndex = 0;
 
 void changeFrame() {
   if (!drawingMode) {
+    if (keyCode == LEFT || keyCode == RIGHT || keyCode == UP || keyCode == DOWN) {
+      highlightedShapeIndex = -1;
+    }
     if (keyCode == LEFT) {
       currentFrameIndex = (currentFrameIndex - 1 + MAX_FRAME) % MAX_FRAME;
     }
@@ -1108,6 +1357,16 @@ String formatShapeParams(String type, Object[] params) {
   return sb.toString();
 }
 
+/**
+ * Toggles the red highlight for the shape whose method name is drawn
+ * with its baseline at lineY. Clicking the same name again clears it.
+ */
+void checkLabelClick(int i, float lineY) {
+  if (customMousePressed && mouseOverAlt(width, lineY - 15, widthAdd - 20, 20)) {
+    highlightedShapeIndex = (highlightedShapeIndex == i) ? -1 : i;
+  }
+}
+
 void displayShapeRecords(float x, float y) {
   textAlign(LEFT);
   SavedFrame frame = savedShapes[currentFrameIndex];
@@ -1136,7 +1395,7 @@ void displayShapeRecords(float x, float y) {
 
     int lastIndex = (clickedIndices.size() > 0) ? clickedIndices.get(clickedIndices.size() - 1) : 0;
     
-    if (lastIndex == i) {
+    if (lastIndex == i || i == highlightedShapeIndex) {
       fill(255, 0, 0);
     } else {
       fill(0);
@@ -1145,6 +1404,7 @@ void displayShapeRecords(float x, float y) {
     if (yPosition >= displayAreaY - 20 && yPosition <= displayAreaY + displayAreaHeight) {
       if (i == 0 && shape.type.equals("background")) {
         super.text(methodAndShape, x, yPosition);
+        checkLabelClick(i, yPosition);
         yPosition += 20;
         lastDisplayedTransformation = null;
         inTransformationBlock = false;
@@ -1178,11 +1438,13 @@ void displayShapeRecords(float x, float y) {
           inTransformationBlock = true;
         }
         super.text("  | " + methodAndShape, x, yPosition);
+        checkLabelClick(i, yPosition);
       } else {
         if (inTransformationBlock) {
           yPosition += 10;
         }
         super.text(methodAndShape, x, yPosition);
+        checkLabelClick(i, yPosition);
         inTransformationBlock = false;
         lastDisplayedTransformation = null;
       }
@@ -1267,6 +1529,7 @@ void displayTimelineBar(float x, float y, float w, float h) {
 
             }
             currentFrameIndex = min(totalFrames, i);
+            highlightedShapeIndex = -1;
           }
         }
       }
