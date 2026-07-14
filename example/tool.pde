@@ -1164,22 +1164,24 @@ void drawEnd() {
 boolean customMousePressed = false;
 boolean previousMousePressed = false;
 
+// pmouseX / pmouseY are variables that hold the mouse of the previous frame. 
+// This tool enlarges the window (by widthAdd / heightAdd) to draw 
+// its own UI (the record list on the right and the timeline at the bottom). 
+// Without care, the user's sketch (drawMain) would react to mouse coordinates
+// that are actually over the tool's UI.
 void updateMouseState() {
   customMousePressed = mousePressed && !previousMousePressed;
   previousMousePressed = mousePressed;
-  
-  if (mouseX <= width && mouseY <= height && mouseX >= 0 && mouseY >= 0) {
-    mouseXAlt = mouseX;
-    mouseYAlt = mouseY;
-    pmouseXAlt = pmouseX;
-    pmouseYAlt = pmouseY;
-    mouseX = constrain(mouseX, 0, width);
-    mouseY = constrain(mouseY, 0, height);
-  } else {
-    mouseXAlt = mouseX;
-    mouseYAlt = mouseY;
-    pmouseXAlt = mouseXAlt;
-    pmouseYAlt = mouseYAlt;
+
+  // Keep the raw position (which may be over the UI) for the tool's own
+  // hit-testing via mouseOverAlt().
+  mouseXAlt = mouseX;
+  mouseYAlt = mouseY;
+
+  if (!(mouseX <= width && mouseY <= height && mouseX >= 0 && mouseY >= 0)) {
+    // Cursor is over the tool's UI: freeze the sketch's mouse position at the
+    // previous frame's value (pmouseX / pmouseY) so drawMain is unaffected
+    // instead of seeing coordinates that fall inside the UI area.
     mouseX = pmouseX;
     mouseY = pmouseY;
   }
@@ -1225,7 +1227,6 @@ int widthAdd  = 280;
 int heightAdd = 100;
 int widthAlt, heightAlt;
 int mouseXAlt = 0, mouseYAlt = 0;
-int pmouseXAlt = 0, pmouseYAlt = 0;
 float btnSize = 0;
 
 /**
