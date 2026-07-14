@@ -833,7 +833,14 @@ void searchShapes() {
     }
 
     clickedIndices.clear();
+    // No shape was hit: select the background, which fills the whole canvas.
     highlightedShapeIndex = -1;
+    for (int i = 0; i < frame.shapes.size(); i++) {
+      if (frame.shapes.get(i).type.equals("background")) {
+        highlightedShapeIndex = i;
+        break;
+      }
+    }
   }
 }
 
