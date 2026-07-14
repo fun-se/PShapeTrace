@@ -54,10 +54,16 @@ ArrayList<Integer> clickedIndices = new ArrayList<Integer>();
 
 /**
  * Index of the shape whose method name was clicked in the record list.
- * The corresponding method name is highlighted in red and the shape is
- * surrounded by a 1-pixel red outline. -1 means no shape is selected.
+ * The corresponding method name is highlighted and the shape is
+ * surrounded by a 1-pixel outline. -1 means no shape is selected.
  */
 int highlightedShapeIndex = -1;
+
+/**
+ * Color used to highlight the selected shape's outline and its method name
+ * in the record list. Change this value to use a different highlight color.
+ */
+final color HIGHLIGHT_COLOR = color(255, 0, 0);
 
 
 
@@ -880,7 +886,7 @@ void drawHighlightOutline() {
 
   colorMode(RGB, 255, 255, 255);
   noFill();
-  stroke(255, 0, 0);
+  stroke(HIGHLIGHT_COLOR);
   // Use super.* so the tool's transformation/mode bookkeeping is untouched.
   super.rectMode(CORNER);
   super.ellipseMode(CENTER);
@@ -1409,7 +1415,7 @@ void displayShapeRecords(float x, float y) {
     int lastIndex = (clickedIndices.size() > 0) ? clickedIndices.get(clickedIndices.size() - 1) : -1;
     
     if (lastIndex == i || i == highlightedShapeIndex) {
-      fill(255, 0, 0);
+      fill(HIGHLIGHT_COLOR);
     } else {
       fill(0);
     }
