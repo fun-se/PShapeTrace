@@ -827,11 +827,13 @@ void searchShapes() {
       if (hit) {
 
         clickedIndices.add(i);
+        highlightedShapeIndex = i;
         return;
       }
     }
 
     clickedIndices.clear();
+    highlightedShapeIndex = -1;
   }
 }
 
@@ -1363,6 +1365,9 @@ String formatShapeParams(String type, Object[] params) {
  */
 void checkLabelClick(int i, float lineY) {
   if (customMousePressed && mouseOverAlt(width, lineY - 15, widthAdd - 20, 20)) {
+    // Clear any previous highlight (e.g. from clicking a shape on the canvas)
+    // so that only one function name is highlighted at a time.
+    clickedIndices.clear();
     highlightedShapeIndex = (highlightedShapeIndex == i) ? -1 : i;
   }
 }
@@ -1393,7 +1398,7 @@ void displayShapeRecords(float x, float y) {
     String formattedShape = formatShapeParams(shape.type, shape.params);
     String methodAndShape = shape.methodName + ": " + formattedShape;
 
-    int lastIndex = (clickedIndices.size() > 0) ? clickedIndices.get(clickedIndices.size() - 1) : 0;
+    int lastIndex = (clickedIndices.size() > 0) ? clickedIndices.get(clickedIndices.size() - 1) : -1;
     
     if (lastIndex == i || i == highlightedShapeIndex) {
       fill(255, 0, 0);
